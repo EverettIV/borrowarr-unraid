@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<Maintainer>
+  <Author>
+    BorrowArr — self-hosted movie and TV discovery, indexer search, download orchestration, and library tools. Templates ship the **all-in-one** image (UI + API in a single container).
+  </Author>
+  <Icon>https://raw.githubusercontent.com/EverettIV/borrowarr-unraid/main/icon.png</Icon>
+  <Profile>
+    https://github.com/EverettIV/borrowarr-unraid
+  </Profile>
+  <DonateLink></DonateLink>
+  <DonateText></DonateText>
+  <Support>
+    https://github.com/EverettIV/borrowarr-unraid/issues
+  </Support>
+</Maintainer>

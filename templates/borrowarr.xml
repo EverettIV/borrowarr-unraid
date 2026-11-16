@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>BorrowArr</Name>
+  <Repository>everettiv/borrowarr:latest</Repository>
+  <Registry>https://hub.docker.com/r/everettiv/borrowarr</Registry>
+  <Network>bridge</Network>
+  <MyIP/>
+  <Shell>sh</Shell>
+  <Privileged>false</Privileged>
+  <Support>https://github.com/thefourthlion/borrowarr/issues</Support>
+  <Project>https://github.com/thefourthlion/borrowarr</Project>
+  <Overview>Discover movies and TV (TMDb), search indexers, send grabs to download clients, and manage your library. Single container: web UI + API.</Overview>
+  <Category>MediaApp:Other</Category>
+  <WebUI>http://[IP]:[PORT:3012]/</WebUI>
+  <TemplateURL>https://raw.githubusercontent.com/EverettIV/borrowarr-unraid/main/templates/borrowarr.xml</TemplateURL>
+  <Icon>https://raw.githubusercontent.com/EverettIV/borrowarr-unraid/main/icon.png</Icon>
+  <Description>
+BorrowArr is a self-hosted *arr-style workflow for movies and TV. You provide indexers and download clients; BorrowArr does not host media.
+
+**This template uses the all-in-one Docker image** (Next.js UI on 3012, API on 3013 inside one container). The UI auto-connects to the API on the same Unraid IP at port 3013 when published as below.
+
+### First run
+1. Map **Appdata** to `/app/data` (SQLite, JWT secrets).
+2. Map **Media** and **Downloads** to `/media` and `/downloads` (or set paths via variables).
+3. Open the WebUI, **register** the first user (admin).
+4. Configure indexers and download clients. Use **host IP**, `host.docker.internal` (extra host below), or your LAN hostname for client URLs.
+
+### Paths inside the container
+| Mount | Purpose |
+|-------|---------|
+| `/app/data` | Database and secrets |
+| `/media` | Library root → `movies/`, `tv/` |
+| `/downloads` | Client root → `downloads/movies/`, `downloads/tv/` |
+
+Point qBittorrent/SABnzbd (etc.) at the same download tree.
+
+### Ports
+- **3012** — Web UI (WebUI link)
+- **3013** — API (keep published if you use the UI from other devices)
+
+### Optional TMDb
+Set `TMDB_API` and `TMDB_API_READ` from [themoviedb.org](https://www.themoviedb.org/settings/api) for production rate limits.
+  </Description>
+  <ReadMe>https://raw.githubusercontent.com/thefourthlion/borrowarr/main/unraid/README.md</ReadMe>
+  <Config Name="Web UI Port" Target="3012" Default="3012" Mode="tcp" Description="BorrowArr web interface" Type="Port" Display="always" Required="true" Mask="false">3012</Config>
+  <Config Name="API Port" Target="3013" Default="3013" Mode="tcp" Description="BorrowArr API (browser uses same host as UI on this port)" Type="Port" Display="always" Required="true" Mask="false">3013</Config>
+  <Config Name="Appdata" Target="/app/data" Default="/mnt/user/appdata/borrowarr" Mode="rw" Description="SQLite database and JWT secrets" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/borrowarr</Config>
+  <Config Name="Media Library" Target="/media" Default="/mnt/user/media" Mode="rw" Description="Library root (movies/ and tv/ subfolders)" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/media</Config>
+  <Config Name="Downloads" Target="/downloads" Default="/mnt/user/downloads" Mode="rw" Description="Download client root (movies/ and tv/ subfolders)" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/downloads</Config>
+  <Config Name="BORROWARR_MEDIA" Target="BORROWARR_MEDIA" Default="/media" Mode="" Description="Env: library root inside container" Type="Variable" Display="advanced" Required="false" Mask="false">/media</Config>
+  <Config Name="BORROWARR_DOWNLOADS" Target="BORROWARR_DOWNLOADS" Default="/downloads" Mode="" Description="Env: downloads root inside container" Type="Variable" Display="advanced" Required="false" Mask="false">/downloads</Config>
+  <Config Name="BORROWARR_ENSURE_MEDIA_DIRS" Target="BORROWARR_ENSURE_MEDIA_DIRS" Default="false" Mode="" Description="Create media/download folders on startup if missing (set true on fresh install)" Type="Variable" Display="advanced" Required="false" Mask="false">false</Config>
+  <Config Name="SQLITE_STORAGE_PATH" Target="SQLITE_STORAGE_PATH" Default="/app/data/database.sqlite" Mode="" Description="SQLite file path" Type="Variable" Display="advanced" Required="true" Mask="false">/app/data/database.sqlite</Config>
+  <Config Name="NODE_ENV" Target="NODE_ENV" Default="production" Mode="" Description="" Type="Variable" Display="advanced" Required="true" Mask="false">production</Config>
+  <Config Name="API_PORT" Target="API_PORT" Default="3013" Mode="" Description="Internal API listen port" Type="Variable" Display="advanced" Required="true" Mask="false">3013</Config>
+  <Config Name="CLIENT_PORT" Target="CLIENT_PORT" Default="3012" Mode="" Description="Internal UI listen port" Type="Variable" Display="advanced" Required="true" Mask="false">3012</Config>
+  <Config Name="TMDB_API" Target="TMDB_API" Default="" Mode="" Description="Optional TMDb v3 API key" Type="Variable" Display="advanced" Required="false" Mask="true"/>
+  <Config Name="TMDB_API_READ" Target="TMDB_API_READ" Default="" Mode="" Description="Optional TMDb read access token" Type="Variable" Display="advanced" Required="false" Mask="true"/>
+  <TailscaleStateDir/>
+  <ExtraParams>--add-host=host.docker.internal:host-gateway</ExtraParams>
+</Container>
