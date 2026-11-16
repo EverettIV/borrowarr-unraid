@@ -28,3 +28,24 @@ Default paths inside the container: `/media/movies`, `/media/tv`, `/downloads/mo
 This repo is only XML + icon for Unraid CA. **No secrets, no `.env`, no database.** Sync changes from the main app repo under `unraid/community-apps/` when the template changes.
 
 Build and push the image from the main BorrowArr repo (`Dockerfile.all-in-one`); see [unraid/README.md](https://github.com/thefourthlion/borrowarr/blob/main/unraid/README.md) there.
+
+## Community Apps submission checklist
+
+Use this repo layout at the **root** of the public GitHub repo (e.g. [EverettIV/borrowarr-unraid](https://github.com/EverettIV/borrowarr-unraid)), then run **Validate** and **Scan** at [ca.unraid.net/submit/new](https://ca.unraid.net/submit/new).
+
+| Requirement | Status |
+|-------------|--------|
+| Public, active GitHub repo (not archived) | Publish `borrowarr-unraid` |
+| OSI license at repo root (`LICENSE`) | MIT in this bundle |
+| `ca_profile.xml` at repo root with non-empty `<Profile>` inside `<CommunityApplications>` | `ca_profile.xml` |
+| Valid Docker template with `<Repository>` | `templates/borrowarr.xml` |
+| Image exists at `<Repository>` | `everettiv/borrowarr:latest` on Docker Hub |
+
+After editing files here, sync to the nested CA repo:
+
+```bash
+./scripts/sync-unraid-ca.sh
+cd borrowarr-unraid && git add -A && git commit -m "Sync CA templates" && git push
+```
+
+Canonical edits live in **`unraid/community-apps/`** (tracked by the main BorrowArr repo). **`borrowarr-unraid/`** at the repo root is a separate git remote and is listed in the parent `.gitignore`.
